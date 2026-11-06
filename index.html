@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>APK Referral</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif;padding-bottom:85px}
+header{padding:24px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:23px;font-weight:800}.logo span{color:#a78bfa}
+.avatar{background:#24202f;border-radius:50%;padding:12px}
+main{padding:0 18px}.page{display:none}.page.active{display:block}
+.welcome{color:#999;font-size:14px}h2{font-size:24px;margin:8px 0 20px}
+.card{background:linear-gradient(135deg,#211a32,#111);border:1px solid #393044;border-radius:18px;padding:22px;margin-bottom:17px}
+.balance{color:#aaa;font-size:14px}.points{font-size:34px;font-weight:bold;margin:12px 0}
+.purple{color:#b69aff}
+button{border:0;border-radius:11px;padding:13px 18px;background:#9875ed;color:white;font-weight:bold;font-size:14px}
+button:active{opacity:.7}.section-title{font-size:19px;margin:25px 0 15px}
+.mission{background:#171717;border:1px solid #292929;border-radius:14px;padding:17px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mission small{color:#999;display:block;margin-top:7px}.reward{color:#b69aff;font-weight:bold;margin-bottom:9px}
+.refcode{background:#0b0b0b;border:1px dashed #8061c5;padding:15px;border-radius:12px;text-align:center;font-size:20px;letter-spacing:2px;margin:16px 0}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #292929;display:flex;justify-content:space-around;padding:12px 3px}
+.nav button{background:none;color:#888;padding:8px;font-size:12px}.nav button.selected{color:#b69aff}
+.info{color:#999;font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+<header><div class="logo">APK <span>REFERRAL.</span></div><div class="avatar">👤</div></header>
+<main>
+<section class="page active" id="home">
+<div class="welcome">Selamat datang kembali,</div><h2>Dashboard 👋</h2>
+<div class="card"><div class="balance">TOTAL SALDO POIN</div><div class="points"><span id="points">0</span> <span class="purple">PTS</span></div><div class="info">Kumpulkan poin melalui misi yang tersedia.</div></div>
+<h3 class="section-title">Aktivitas kamu</h3>
+<div class="mission"><div>🎯 <b>Total misi selesai</b></div><b id="done">0</b></div>
+<div class="mission"><div>👥 <b>Total referral</b></div><b>0</b></div>
+<h3 class="section-title">Misi pilihan</h3><div class="mission"><div>📱 <b>Mulai menjelajahi</b><small>Kenali aplikasi referral</small></div><button onclick="go('missions')">Lihat</button></div>
+</section>
+<section class="page" id="missions"><h2>Daftar Misi 🎯</h2><p class="info">Selesaikan misi untuk mendapatkan poin demo.</p>
+<div class="mission"><div>📲 <b>Misi pertama</b><small>Buka halaman misi</small></div><div><div class="reward">+100 PTS</div><button onclick="claim(0)">Ambil</button></div></div>
+<div class="mission"><div>⭐ <b>Misi kedua</b><small>Jelajahi halaman profil</small></div><div><div class="reward">+150 PTS</div><button onclick="claim(1)">Ambil</button></div></div>
+<div class="mission"><div>🎁 <b>Misi ketiga</b><small>Kunjungi halaman referral</small></div><div><div class="reward">+200 PTS</div><button onclick="claim(2)">Ambil</button></div></div>
+<p class="info">Misi ini hanya simulasi. Poin belum memiliki nilai uang dan belum terhubung ke server.</p></section>
+<section class="page" id="referral"><h2>Undang Teman 👥</h2><div class="card"><h3>Program Referral</h3><p class="info">Bagikan kode undanganmu kepada teman.</p><div class="refcode" id="code">RENDU001</div><button style="width:100%" onclick="copyCode()">Salin Kode Undangan</button><p class="info">Kode ini masih contoh. Sistem referral sungguhan membutuhkan backend dan verifikasi pengguna.</p></div></section>
+<section class="page" id="profile"><h2>Profil Saya 👤</h2><div class="card"><div style="font-size:45px">👤</div><h3>Pengguna APK Referral</h3><p class="info">Akun demo</p></div><div class="mission">💎 Total poin <b id="profilePoints">0</b></div><div class="mission">🎯 Misi selesai <b id="profileDone">0</b></div><p class="info">Versi aplikasi: 1.0.0</p></section>
+</main>
+<nav class="nav"><button class="selected" onclick="go('home',this)">⌂<br>Home</button><button onclick="go('missions',this)">🎯<br>Misi</button><button onclick="go('referral',this)">👥<br>Referral</button><button onclick="go('profile',this)">👤<br>Profil</button></nav>
+<script>
+let points=Number(localStorage.getItem('points')||0),done=Number(localStorage.getItem('done')||0),claimed=JSON.parse(localStorage.getItem('claimed')||'[]');
+function update(){document.getElementById('points').textContent=points;document.getElementById('done').textContent=done;document.getElementById('profilePoints').textContent=points;document.getElementById('profileDone').textContent=done;localStorage.setItem('points',points);localStorage.setItem('done',done);localStorage.setItem('claimed',JSON.stringify(claimed))}
+function claim(id){if(claimed.includes(id)){alert('Misi sudah diambil!');return}let rewards=[100,150,200];points+=rewards[id];done++;claimed.push(id);update();alert('Berhasil! +'+rewards[id]+' poin demo.')}
+function go(page,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(page).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('selected'));if(btn)btn.classList.add('selected');else{let buttons=document.querySelectorAll('.nav button'),pages=['home','missions','referral','profile'];buttons[pages.indexOf(page)].classList.add('selected')}update()}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').textContent).then(()=>alert('Kode undangan berhasil disalin!')).catch(()=>alert('Silakan salin kode secara manual.'))}
+update();
+</script>
+</body>
+</html>
